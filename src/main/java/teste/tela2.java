@@ -8,9 +8,18 @@ import java.awt.event.KeyEvent;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.awt.*;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class tela2 extends JFrame implements ActionListener{
 JButton B = new JButton("cadastar");
+
+Calendar x = Calendar.getInstance();
+DateFormat formatadata = DateFormat.getDateInstance();
+DateFormat f = DateFormat.getDateInstance(DateFormat.SHORT);
+Date data = x.getTime();
 
 JLabel label = new JLabel();
 
@@ -124,11 +133,15 @@ public tela2(){
                     caixaCpf.getText().trim().isEmpty() ||
                     caixaSobrenome.getText().trim().isEmpty() ||
                     caixaEmail.getText().trim().isEmpty() ||
-                    caixaSenha.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(janelaDEAviso, "um dos campos esta vazio ");
-            } else {
-                try {
+                    caixaSenha.getText().trim().isEmpty() ||
+                    conexaoDB.naoIgual(conn, security.getTableName(), caixaEmail.getText(), caixaCpf.getText()) == 1) {
 
+                JOptionPane.showMessageDialog(janelaDEAviso, "um dos campos esta vazio ou email/cpf ja esta em uso");
+
+
+            } else{
+
+                try {
                     conexaoDB.inserir_linha(conn, caixaNome.getText(),
                             caixaEmail.getText(),
                             senhaHex(caixaSenha.getText()),

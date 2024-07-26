@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: teste.conta
+Class-Path: checker-qual-3.42.0.jar postgresql-42.7.3.jar
+

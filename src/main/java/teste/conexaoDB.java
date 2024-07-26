@@ -4,8 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Calendar;
+
 
 public class conexaoDB {
+
+    Calendar c = Calendar.getInstance();
+
+
     public Connection coneDB(String DBname, String user, String pass) {
         
         Connection conn = null;
@@ -39,41 +45,42 @@ public class conexaoDB {
 
     public void inserir_linha(Connection conn, String name, String email,String senha, String sobrenome, int cpf, String table_name) {
         Statement statement;
-        try {
-            String query = String.format("insert into %s(name,email, senha, sobrenome, cpf) values('%s', '%s', '%s','%s' , '%d');", table_name, name, email, senha,sobrenome, cpf);
-            statement = conn.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("Inseriu");
-        } catch (Exception e) {
+        try{
+                String query2 = String.format("insert into %s(name,email, senha, sobrenome, cpf, data_cadastro) values('%s', '%s', '%s','%s' , '%d', '%s');", table_name, name, email, senha,sobrenome, cpf, c.getTime());
+                statement = conn.createStatement();
+                statement.executeUpdate(query2);
+                System.out.println("Inseriu");
+
+        }catch (Exception e){
             System.out.println(e);
+
         }
 
-
     }
-    public void raedData(Connection conn, String table_name){
+    public int naoIgual (Connection conn, String table_name, String email, String cpf){
         Statement statement;
-        ResultSet rs = null;
+        ResultSet rs;
+
         try{
             String query = String.format("select * from %s", table_name);
             statement = conn.createStatement();
             rs = statement.executeQuery(query);
             while(rs.next()){
-                System.out.print(rs.getString("empid") + " ");
-                System.out.print(rs.getString("name") + " ");
-                System.out.print(rs.getString("senha") + " ");
-                System.out.print(rs.getString("cpf") + " ");
-                System.out.print(rs.getString("email") + " ");
-                System.out.print(rs.getString("saldo") + " ");
-                System.out.print(rs.getString("sobrenome") + " ");
+                if(email.equals(rs.getString("email")) || cpf.equals(rs.getString("cpf"))){
+                    return 1;
+                }
+                else{
+                }
             }
         }catch(Exception e){
             System.out.println(e);
 
         }
+        return 0;
     }
     public String name(Connection conn, String table_name, String email){
         Statement statement;
-        ResultSet rs = null;
+        ResultSet rs;
         String retornaNome = new String();
         try{
             String query = String.format("select * from %s where email = '%s'", table_name, email);
@@ -92,15 +99,14 @@ public class conexaoDB {
     }
     public String busca(Connection conn, String table_name, String email){
         Statement statement;
-        ResultSet rs = null;
-        String retornaBusca = new String();
+        ResultSet rs;
+        String retornaBusca = null;
         try{
             String query = String.format("select senha from %s where email = '%s'", table_name, email);
             statement = conn.createStatement();
             rs = statement.executeQuery(query);
             if(rs.next()){
                 retornaBusca = rs.getString("senha");
-
             }
         }catch(Exception e){
             System.out.println(e);
@@ -110,7 +116,7 @@ public class conexaoDB {
     }
     public double saldo(Connection conn, String table_name, String email){
         Statement statement;
-        ResultSet rs = null;
+        ResultSet rs;
         String retornaBusca;
         double retorno = 0;
         try{
@@ -135,7 +141,8 @@ public class conexaoDB {
             String query = String.format("update %s set saldo = '%s' where empid = '%d'", table_name, saldo, empid );
             statement = conn.createStatement();
             statement.executeUpdate(query);
-            System.out.println("saldo inserido");
+            String query2 = String.format("update %s set data_transacao = '%s' where empid = '%d'", table_name,c.getTime(), empid );
+            statement.executeUpdate(query2);
 
         }catch (Exception e){
             System.out.println(e);

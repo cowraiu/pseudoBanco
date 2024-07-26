@@ -123,9 +123,7 @@ public class tela extends JFrame implements ActionListener {
                     finali = String.valueOf(saldo - t);
                     cone.setSaldo(conn, security.getTableName(), telaLogin.getEmpid(), finali);
                     caixa2.setText("Saldo = " + cone.saldo(conn, security.getTableName(), telaLogin.getEmail()) + "$");
-                    System.out.println("empid botao" + telaLogin.getEmpid());
-                    System.out.println("saldo " + telaLogin.getSaldo());
-                    System.out.println("email " + telaLogin.getEmail());
+
                 }else{
                     JOptionPane.showMessageDialog(janelaDEAviso, "saque não disponivel");
                 }
